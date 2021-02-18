@@ -1,1 +1,3 @@
-# mic-auth-service
+# Description
+
+The service will authenticate and authorize users.
