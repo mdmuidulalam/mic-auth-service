@@ -1,0 +1,30 @@
+info:
+  contact: {}
+paths:
+  /authenticate:
+    post:
+      consumes:
+      - application/json
+      description: It will authenticate an user from provided information
+      operationId: authenticate-user
+      parameters:
+      - description: Username of the user
+        in: body
+        name: username
+        required: true
+        schema:
+          type: string
+      - description: Password of the user
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: The authentication is complete and access token provided in
+            http only cookies
+          schema:
+            type: boolean
+      summary: Authenticate an user
+swagger: "2.0"
