@@ -1,0 +1,46 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/authenticate": {
+            "post": {
+                "description": "It will authenticate an user from provided information",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "Authenticate an user",
+                "operationId": "authenticate-user",
+                "parameters": [
+                    {
+                        "description": "Username of the user",
+                        "name": "username",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Password of the user",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The authentication is complete and access token provided in http only cookies",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
