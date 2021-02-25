@@ -1,13 +1,15 @@
 package logics
 
 import (
-	logicinterface "auth-service/logic/interfaces"
+	logicinterface "auth-service/logics/interfaces"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthenticationLogic struct {
 	username           string
 	password           string
-	authenticationData logicinterface.IAuthenticationData
+	AuthenticationData logicinterface.IAuthenticationData
 }
 
 func (authLogic AuthenticationLogic) SetUserName(username string) {
@@ -19,11 +21,16 @@ func (authLogic AuthenticationLogic) SetPassword(password string) {
 }
 
 func (authLogic AuthenticationLogic) Authenticate() (int, string) {
-	authLogic.authenticationData.SetUserName(authLogic.username)
+	authLogic.AuthenticationData.SetUserName(authLogic.username)
 
-	passwordHash, active := authLogic.authenticationData.FetchUserHashPasswordAndActive()
+	hashedPassword, active := authLogic.AuthenticationData.FetchUserHashPasswordAndActive()
 
-	if passwordHash == authLogic.password {
+	// hashedPassword, err := bcrypt.GenerateFromPassword([]byte(authLogic.password), bcrypt.DefaultCost)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	if bcrypt.CompareHashAndPassword(hashedPassword, []byte(authLogic.password)) == nil {
 		if active {
 			token := "d6sd4f5d456asd1f5a1f.f5asd16a1d.4da6sd4"
 			return 1, token

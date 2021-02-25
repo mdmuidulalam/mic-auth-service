@@ -8,6 +8,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	data "auth-service/data"
 	logics "auth-service/logics"
 	routes "auth-service/routes"
 )
@@ -17,6 +18,11 @@ func main() {
 	routes.Auth{
 		R:                   r,
 		AuthenticationLogic: logics.AuthenticationLogic{},
+		RegisterLogic: &logics.RegisterLogic{
+			RegisterData: &data.AuthInformationData{
+				MongoData: &data.MongoData{},
+			},
+		},
 	}.New()
 
 	docs.SwaggerInfo.Title = "Musk Daily API Documentation"

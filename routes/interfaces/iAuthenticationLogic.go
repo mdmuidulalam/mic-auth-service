@@ -5,7 +5,7 @@ type IAuthenticationLogic interface {
 	* Action: Authenticate an user
 	* Return (int, string) => (Authentication Status, Auth Token)
 	* Return => (1, "token") => Authentication successfull
-	* Return => (2, "") => Wrong authentication information
+	* Return => (2, "") => The user is already registered
 	 */
 	Authenticate() (int, string)
 

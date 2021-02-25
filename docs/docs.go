@@ -58,6 +58,56 @@ var doc = `{
                         "schema": {
                             "type": "boolean"
                         }
+                    },
+                    "210": {
+                        "description": "Wrong authentication information provided",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "It will register an user with provided information",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "Register an user",
+                "operationId": "register-user",
+                "parameters": [
+                    {
+                        "description": "Username of the user",
+                        "name": "username",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Password of the user",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The registration is completed",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "210": {
+                        "description": "The user is already registered",
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 }
             }
