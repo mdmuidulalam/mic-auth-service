@@ -3,9 +3,14 @@ package logicinterface
 type IRegisterData interface {
 	/*
 	* Action: Create a new user with username and password
-	* Return (bool) => (status flag success/failed)
 	 */
 	InsertAuthInformation()
+
+	/*
+	* Action: Find auth information for a user with username
+	* Return (*interface{}) => (authInfomation)
+	 */
+	FindOneAuthInformation() *IRegisterData
 
 	/*
 	 * Action: Set username class variable

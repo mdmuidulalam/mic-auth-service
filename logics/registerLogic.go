@@ -2,7 +2,6 @@ package logics
 
 import (
 	logicinterface "auth-service/logics/interfaces"
-	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -23,16 +22,20 @@ func (regLogic *RegisterLogic) SetPassword(password string) {
 
 func (regLogic *RegisterLogic) Register() int {
 	regLogic.RegisterData.SetUserName(regLogic.username)
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(regLogic.password), bcrypt.DefaultCost)
-	if err != nil {
-		//TODO logging need to be done
-		panic(err)
+
+	authInfo := regLogic.RegisterData.FindOneAuthInformation()
+	if authInfo == nil {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(regLogic.password), bcrypt.DefaultCost)
+		if err != nil {
+			//TODO logging need to be done
+			panic(err)
+		}
+
+		regLogic.RegisterData.SetPasswordHash(hashedPassword)
+		regLogic.RegisterData.InsertAuthInformation()
+
+		return 1
+	} else {
+		return 2
 	}
-	regLogic.RegisterData.SetPasswordHash(hashedPassword)
-
-	fmt.Println(hashedPassword)
-
-	regLogic.RegisterData.InsertAuthInformation()
-
-	return 1
 }
