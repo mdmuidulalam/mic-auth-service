@@ -56,7 +56,7 @@ func (authData *AuthInformationData) InsertAuthInformation() {
 	authData.MongoData.Disconnect()
 }
 
-func (authData *AuthInformationData) FindOneAuthInformation() *logicinterface.IRegisterData {
+func (authData *AuthInformationData) FindOneAuthInformation() *logicinterface.IAuthInformation {
 	authData.MongoData.Connect()
 	collection := authData.MongoData.GetDatabaseInstance().Collection("authInformation")
 
@@ -69,7 +69,7 @@ func (authData *AuthInformationData) FindOneAuthInformation() *logicinterface.IR
 		}
 	}
 
-	var authInformation logicinterface.IRegisterData = authData
+	var authInformation logicinterface.IAuthInformation = authData
 	authData.MongoData.Disconnect()
 
 	return &authInformation

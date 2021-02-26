@@ -10,7 +10,7 @@ type IRegisterData interface {
 	* Action: Find auth information for a user with username
 	* Return (*interface{}) => (authInfomation)
 	 */
-	FindOneAuthInformation() *IRegisterData
+	FindOneAuthInformation() *IAuthInformation
 
 	/*
 	 * Action: Set username class variable

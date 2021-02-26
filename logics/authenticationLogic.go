@@ -2,7 +2,9 @@ package logics
 
 import (
 	logicinterface "auth-service/logics/interfaces"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -12,32 +14,35 @@ type AuthenticationLogic struct {
 	AuthenticationData logicinterface.IAuthenticationData
 }
 
-func (authLogic AuthenticationLogic) SetUserName(username string) {
+func (authLogic *AuthenticationLogic) SetUserName(username string) {
 	authLogic.username = username
 }
 
-func (authLogic AuthenticationLogic) SetPassword(password string) {
+func (authLogic *AuthenticationLogic) SetPassword(password string) {
 	authLogic.password = password
 }
 
-func (authLogic AuthenticationLogic) Authenticate() (int, string) {
+func (authLogic *AuthenticationLogic) Authenticate() (int, string) {
 	authLogic.AuthenticationData.SetUserName(authLogic.username)
 
-	hashedPassword, active := authLogic.AuthenticationData.FetchUserHashPasswordAndActive()
+	authInformation := authLogic.AuthenticationData.FindOneAuthInformation()
 
-	// hashedPassword, err := bcrypt.GenerateFromPassword([]byte(authLogic.password), bcrypt.DefaultCost)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	if bcrypt.CompareHashAndPassword(hashedPassword, []byte(authLogic.password)) == nil {
-		if active {
-			token := "d6sd4f5d456asd1f5a1f.f5asd16a1d.4da6sd4"
-			return 1, token
-		} else {
-			return 3, ""
-		}
+	if bcrypt.CompareHashAndPassword((*authInformation).GetPasswordHash(), []byte(authLogic.password)) == nil {
+		token := authLogic.createToken()
+		return 1, token
 	} else {
 		return 2, ""
 	}
+}
+
+func (authLogic *AuthenticationLogic) createToken() string {
+	claims := jwt.MapClaims{}
+	claims["username"] = authLogic.username
+	claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte("Secrate_Code"))
+	if err != nil {
+		panic(err)
+	}
+	return tokenString
 }

@@ -16,8 +16,12 @@ import (
 func main() {
 	r := gin.Default()
 	routes.Auth{
-		R:                   r,
-		AuthenticationLogic: logics.AuthenticationLogic{},
+		R: r,
+		AuthenticationLogic: &logics.AuthenticationLogic{
+			AuthenticationData: &data.AuthInformationData{
+				MongoData: &data.MongoData{},
+			},
+		},
 		RegisterLogic: &logics.RegisterLogic{
 			RegisterData: &data.AuthInformationData{
 				MongoData: &data.MongoData{},
