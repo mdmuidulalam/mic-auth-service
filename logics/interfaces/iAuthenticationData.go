@@ -2,10 +2,10 @@ package logicinterface
 
 type IAuthenticationData interface {
 	/*
-	* Action: Fetch password hash and active flag for an user
-	* Return ([]byte, bool) => (password hash, active flag)
+	* Action: Find auth information for a user with username
+	* Return (*interface{}) => (authInfomation)
 	 */
-	FetchUserHashPasswordAndActive() ([]byte, bool)
+	FindOneAuthInformation() *IAuthInformation
 
 	/*
 	* Action: Set username class variable
