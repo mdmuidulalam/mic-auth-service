@@ -1,6 +1,10 @@
 package main
 
 import (
+	"log"
+	"os"
+	"runtime/debug"
+
 	"github.com/gin-gonic/gin"
 
 	"auth-service/docs"
@@ -15,6 +19,7 @@ import (
 
 func main() {
 	r := gin.Default()
+	r.Use(logger())
 	routes.Auth{
 		R: r,
 		AuthenticationLogic: &logics.AuthenticationLogic{
@@ -38,4 +43,24 @@ func main() {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.Run(":8080")
+}
+
+func logger() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		file, err := os.OpenFile("panic.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.SetOutput(file)
+
+		defer func() {
+			if err := recover(); err != nil {
+				log.Println(err)
+				log.Println("stacktrace from panic: \n" + string(debug.Stack()))
+				c.Writer.WriteHeader(500)
+			}
+		}()
+
+		c.Next()
+	}
 }
