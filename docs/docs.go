@@ -68,6 +68,30 @@ var doc = `{
                 }
             }
         },
+        "/authorize": {
+            "get": {
+                "description": "It will authorize an user with jwt token from http only cookies",
+                "consumes": [
+                    "application/json"
+                ],
+                "summary": "Authorize an user",
+                "operationId": "authorize-user",
+                "responses": {
+                    "200": {
+                        "description": "The user is authorized",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "210": {
+                        "description": "Wrong jwt token",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "description": "It will register an user with provided information",

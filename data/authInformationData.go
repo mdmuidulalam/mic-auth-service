@@ -49,7 +49,6 @@ func (authData *AuthInformationData) InsertAuthInformation() {
 
 	fmt.Println(authData)
 	if _, err := collection.InsertOne(context.TODO(), authData); err != nil {
-		//TODO logging need to be done
 		panic(err)
 	}
 
@@ -64,7 +63,6 @@ func (authData *AuthInformationData) FindOneAuthInformation() *logicinterface.IA
 		if err == mongo.ErrNoDocuments {
 			return nil
 		} else {
-			//TODO logging need to be done
 			panic(err)
 		}
 	}
