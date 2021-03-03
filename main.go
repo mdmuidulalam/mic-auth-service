@@ -27,6 +27,7 @@ func main() {
 				MongoData: &data.MongoData{},
 			},
 		},
+		AuthorizationLogic: &logics.AuthorizationLogic{},
 		RegisterLogic: &logics.RegisterLogic{
 			RegisterData: &data.AuthInformationData{
 				MongoData: &data.MongoData{},

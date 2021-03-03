@@ -31,6 +31,22 @@ paths:
           schema:
             type: boolean
       summary: Authenticate an user
+  /authorize:
+    get:
+      consumes:
+      - application/json
+      description: It will authorize an user with jwt token from http only cookies
+      operationId: authorize-user
+      responses:
+        "200":
+          description: The user is authorized
+          schema:
+            type: boolean
+        "210":
+          description: Wrong jwt token
+          schema:
+            type: boolean
+      summary: Authorize an user
   /register:
     post:
       consumes:
