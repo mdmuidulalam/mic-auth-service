@@ -23,7 +23,7 @@ paths:
       responses:
         "200":
           description: The authentication is complete and access token provided in
-            http only cookies
+            http only cookies with key 'auth-token'
           schema:
             type: boolean
         "210":
@@ -36,6 +36,7 @@ paths:
       consumes:
       - application/json
       description: It will authorize an user with jwt token from http only cookies
+        with key name 'auth-token'
       operationId: authorize-user
       responses:
         "200":

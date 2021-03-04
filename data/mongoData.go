@@ -20,7 +20,6 @@ func (mongoDt *MongoData) Connect() {
 	var err error
 
 	if mongoDt.client, err = mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017")); err != nil {
-		//TODO logging need to be done
 		panic(err)
 	}
 
@@ -29,7 +28,6 @@ func (mongoDt *MongoData) Connect() {
 
 func (mongoDt *MongoData) Disconnect() {
 	if err := mongoDt.client.Disconnect(context.TODO()); err != nil {
-		//TODO logging need to be done
 		panic(err)
 	}
 }

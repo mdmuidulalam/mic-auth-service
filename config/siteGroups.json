@@ -1,0 +1,20 @@
+[{
+    "key" : "tuiz",
+    "database": {
+        "name": "tuiz",
+        "host": "localhost",
+        "post": "27017",
+        "user": "",
+        "password": ""
+    } 
+},
+{
+    "key" : "auth-Service",
+    "database": {
+        "name": "authService",
+        "host": "localhost",
+        "post": "27017",
+        "user": "",
+        "password": ""
+    } 
+}]
