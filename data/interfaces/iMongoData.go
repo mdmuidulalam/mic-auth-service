@@ -6,4 +6,5 @@ type IMongoData interface {
 	GetDatabaseInstance() *mongo.Database
 	Connect()
 	Disconnect()
+	SetSiteGroup(string)
 }

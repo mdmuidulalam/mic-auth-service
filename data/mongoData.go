@@ -1,6 +1,7 @@
 package data
 
 import (
+	"auth-service/config"
 	"context"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -8,22 +9,30 @@ import (
 )
 
 type MongoData struct {
-	client   *mongo.Client
-	Database *mongo.Database
+	client           *mongo.Client
+	Database         *mongo.Database
+	siteGroup        string
+	SiteGroupsConfig *config.SiteGroupsConfig
 }
 
 func (mongoDt *MongoData) GetDatabaseInstance() *mongo.Database {
 	return mongoDt.Database
 }
 
+func (regLogic *MongoData) SetSiteGroup(siteGroup string) {
+	regLogic.siteGroup = siteGroup
+}
+
 func (mongoDt *MongoData) Connect() {
 	var err error
+	siteGroupConfig := (*mongoDt.SiteGroupsConfig.GetSiteGroupConfig())[mongoDt.siteGroup]
 
-	if mongoDt.client, err = mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017")); err != nil {
+	if mongoDt.client, err = mongo.Connect(
+		context.TODO(), options.Client().ApplyURI("mongodb://"+siteGroupConfig.Database.Host+":"+siteGroupConfig.Database.Port)); err != nil {
 		panic(err)
 	}
 
-	mongoDt.Database = mongoDt.client.Database("authService")
+	mongoDt.Database = mongoDt.client.Database(siteGroupConfig.Database.Name)
 }
 
 func (mongoDt *MongoData) Disconnect() {

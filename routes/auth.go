@@ -70,6 +70,7 @@ func (auth Auth) Register(c *gin.Context) {
 
 	auth.RegisterLogic.SetUserName(authInfo.Username)
 	auth.RegisterLogic.SetPassword(authInfo.Password)
+	auth.RegisterLogic.SetSiteGroup(authInfo.SiteGroup)
 
 	registerStatus := auth.RegisterLogic.Register()
 
@@ -110,6 +111,7 @@ func (auth Auth) Authorize(c *gin.Context) {
 
 //* Dealing authentication information
 type authenticationInformation struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Username  string `json:"username" binding:"required"`
+	Password  string `json:"password" binding:"required"`
+	SiteGroup string `json:"siteGroup" binding:"required"`
 }

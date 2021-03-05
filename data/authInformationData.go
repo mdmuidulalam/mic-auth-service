@@ -16,7 +16,12 @@ type AuthInformationData struct {
 	Username     string
 	PasswordHash []byte
 	CreateOn     time.Time
+	siteGroup    string                   `bson:"-"`
 	MongoData    datainterface.IMongoData `bson:"-"`
+}
+
+func (regLogic *AuthInformationData) SetSiteGroup(siteGroup string) {
+	regLogic.siteGroup = siteGroup
 }
 
 func (authData *AuthInformationData) SetUserName(username string) {
@@ -44,19 +49,23 @@ func (authData *AuthInformationData) GetCreateOn() time.Time {
 }
 
 func (authData *AuthInformationData) InsertAuthInformation() {
+	authData.MongoData.SetSiteGroup(authData.siteGroup)
 	authData.MongoData.Connect()
+	defer authData.MongoData.Disconnect()
+
 	collection := authData.MongoData.GetDatabaseInstance().Collection("authInformation")
 
 	fmt.Println(authData)
 	if _, err := collection.InsertOne(context.TODO(), authData); err != nil {
 		panic(err)
 	}
-
-	authData.MongoData.Disconnect()
 }
 
 func (authData *AuthInformationData) FindOneAuthInformation() *logicinterface.IAuthInformation {
+	authData.MongoData.SetSiteGroup(authData.siteGroup)
 	authData.MongoData.Connect()
+	defer authData.MongoData.Disconnect()
+
 	collection := authData.MongoData.GetDatabaseInstance().Collection("authInformation")
 
 	if err := collection.FindOne(context.TODO(), bson.M{"username": authData.Username}).Decode(authData); err != nil {
@@ -68,7 +77,6 @@ func (authData *AuthInformationData) FindOneAuthInformation() *logicinterface.IA
 	}
 
 	var authInformation logicinterface.IAuthInformation = authData
-	authData.MongoData.Disconnect()
 
 	return &authInformation
 }

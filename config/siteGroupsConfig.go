@@ -1,38 +1,44 @@
 package config
 
 import (
-	"github.com/tkanos/gonfig"
+	"encoding/json"
+	"io/ioutil"
 )
 
-type SiteGroup struct {
-	key      string
-	database struct {
-		name     string
-		host     string
-		port     string
-		user     string
-		password string
+type siteGroup struct {
+	Key      string
+	Database struct {
+		Name     string
+		Host     string
+		Port     string
+		User     string
+		Password string
 	}
 }
 
-type SiteGroupConfig struct {
-	siteGroupsMap *map[string]*SiteGroup
+type SiteGroupsConfig struct {
+	siteGroupsMap *map[string]*siteGroup
 }
 
-func (sgConfig *SiteGroupConfig) SetSiteGroupConfig() {
-	var siteGroups []*SiteGroup
-	if err := gonfig.GetConf("siteGroups.json", siteGroups); err != nil {
+func (sgConfig *SiteGroupsConfig) SetSiteGroupConfig() {
+	fileContent, err := ioutil.ReadFile("config/siteGroups.json")
+	if err != nil {
 		panic(err)
 	}
 
-	sgConfig.siteGroupsMap = &map[string]*SiteGroup{}
+	var siteGroups []*siteGroup
+	if err = json.Unmarshal(fileContent, &siteGroups); err != nil {
+		panic(err)
+	}
+
+	sgConfig.siteGroupsMap = &map[string]*siteGroup{}
 	for _, siteGroup := range siteGroups {
-		(*sgConfig.siteGroupsMap)[siteGroup.key] = siteGroup
+		(*sgConfig.siteGroupsMap)[siteGroup.Key] = siteGroup
 	}
 }
 
-func (sgConfig *SiteGroupConfig) GetSiteGroupConfig() *map[string]*SiteGroup {
-	if len(*sgConfig.siteGroupsMap) == 0 {
+func (sgConfig *SiteGroupsConfig) GetSiteGroupConfig() *map[string]*siteGroup {
+	if sgConfig.siteGroupsMap == nil || len(*sgConfig.siteGroupsMap) == 0 {
 		sgConfig.SetSiteGroupConfig()
 	}
 

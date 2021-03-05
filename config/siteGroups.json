@@ -3,7 +3,7 @@
     "database": {
         "name": "tuiz",
         "host": "localhost",
-        "post": "27017",
+        "port": "27017",
         "user": "",
         "password": ""
     } 
@@ -13,7 +13,7 @@
     "database": {
         "name": "authService",
         "host": "localhost",
-        "post": "27017",
+        "port": "27017",
         "user": "",
         "password": ""
     } 

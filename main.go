@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"auth-service/config"
 	"auth-service/docs"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -18,6 +19,8 @@ import (
 )
 
 func main() {
+
+	siteGroupsConfig := &config.SiteGroupsConfig{}
 
 	r := gin.Default()
 
@@ -34,8 +37,11 @@ func main() {
 		AuthorizationLogic: &logics.AuthorizationLogic{},
 		RegisterLogic: &logics.RegisterLogic{
 			RegisterData: &data.AuthInformationData{
-				MongoData: &data.MongoData{},
+				MongoData: &data.MongoData{
+					SiteGroupsConfig: siteGroupsConfig,
+				},
 			},
+			SiteGroupsConfig: siteGroupsConfig,
 		},
 	}.New()
 
