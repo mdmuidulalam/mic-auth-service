@@ -31,7 +31,9 @@ func main() {
 		R: r,
 		AuthenticationLogic: &logics.AuthenticationLogic{
 			AuthenticationData: &data.AuthInformationData{
-				MongoData: &data.MongoData{},
+				MongoData: &data.MongoData{
+					SiteGroupsConfig: siteGroupsConfig,
+				},
 			},
 		},
 		AuthorizationLogic: &logics.AuthorizationLogic{},
@@ -41,8 +43,8 @@ func main() {
 					SiteGroupsConfig: siteGroupsConfig,
 				},
 			},
-			SiteGroupsConfig: siteGroupsConfig,
 		},
+		SiteGroupsConfig: siteGroupsConfig,
 	}.New()
 
 	r.Run(":8080")

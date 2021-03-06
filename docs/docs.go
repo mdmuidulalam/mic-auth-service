@@ -64,6 +64,12 @@ var doc = `{
                         "schema": {
                             "type": "boolean"
                         }
+                    },
+                    "211": {
+                        "description": "The siteGroup doesn't exists",
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 }
             }
@@ -129,6 +135,12 @@ var doc = `{
                     },
                     "210": {
                         "description": "The user is already registered",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "211": {
+                        "description": "The siteGroup doesn't exists",
                         "schema": {
                             "type": "boolean"
                         }

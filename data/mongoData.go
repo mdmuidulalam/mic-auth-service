@@ -19,8 +19,8 @@ func (mongoDt *MongoData) GetDatabaseInstance() *mongo.Database {
 	return mongoDt.Database
 }
 
-func (regLogic *MongoData) SetSiteGroup(siteGroup string) {
-	regLogic.siteGroup = siteGroup
+func (mongoDt *MongoData) SetSiteGroup(siteGroup string) {
+	mongoDt.siteGroup = siteGroup
 }
 
 func (mongoDt *MongoData) Connect() {

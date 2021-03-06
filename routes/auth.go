@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"auth-service/config"
 	routesinterface "auth-service/routes/interfaces"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,7 @@ type Auth struct {
 	AuthenticationLogic routesinterface.IAuthenticationLogic
 	RegisterLogic       routesinterface.IRegisterLogic
 	AuthorizationLogic  routesinterface.IAuthorizationLogic
+	SiteGroupsConfig    *config.SiteGroupsConfig
 }
 
 func (auth Auth) New() {
@@ -28,15 +30,20 @@ func (auth Auth) New() {
 // @Param password body string true "Password of the user"
 // @Success 200 {boolean} boolean "The authentication is complete and access token provided in http only cookies with key 'auth-token'"
 // @Success 210 {boolean} boolean "Wrong authentication information provided"
+// @Success 211 {boolean} boolean "The siteGroup doesn't exists"
 func (auth Auth) Authenticate(c *gin.Context) {
 	var authInfo authenticationInformation
-
 	if err := c.ShouldBind(&authInfo); err != nil {
 		panic(err)
+	}
+	if _, exist := (*auth.SiteGroupsConfig.GetSiteGroupConfig())[authInfo.SiteGroup]; !exist {
+		c.Writer.WriteHeader(211)
+		return
 	}
 
 	auth.AuthenticationLogic.SetUserName(authInfo.Username)
 	auth.AuthenticationLogic.SetPassword(authInfo.Password)
+	auth.AuthenticationLogic.SetSiteGroup(authInfo.SiteGroup)
 
 	authStatus, token := auth.AuthenticationLogic.Authenticate()
 
@@ -61,11 +68,15 @@ func (auth Auth) Authenticate(c *gin.Context) {
 // @Param password body string true "Password of the user"
 // @Success 200 {boolean} boolean "The registration is completed"
 // @Success 210 {boolean} boolean "The user is already registered"
+// @Success 211 {boolean} boolean "The siteGroup doesn't exists"
 func (auth Auth) Register(c *gin.Context) {
 	var authInfo authenticationInformation
-
 	if err := c.ShouldBind(&authInfo); err != nil {
 		panic(err)
+	}
+	if _, exist := (*auth.SiteGroupsConfig.GetSiteGroupConfig())[authInfo.SiteGroup]; !exist {
+		c.Writer.WriteHeader(211)
+		return
 	}
 
 	auth.RegisterLogic.SetUserName(authInfo.Username)

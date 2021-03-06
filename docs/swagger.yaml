@@ -30,6 +30,10 @@ paths:
           description: Wrong authentication information provided
           schema:
             type: boolean
+        "211":
+          description: The siteGroup doesn't exists
+          schema:
+            type: boolean
       summary: Authenticate an user
   /authorize:
     get:
@@ -74,6 +78,10 @@ paths:
             type: boolean
         "210":
           description: The user is already registered
+          schema:
+            type: boolean
+        "211":
+          description: The siteGroup doesn't exists
           schema:
             type: boolean
       summary: Register an user

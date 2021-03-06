@@ -12,4 +12,10 @@ type IAuthenticationData interface {
 	* Parameter: (string) => (username)
 	 */
 	SetUserName(string)
+
+	/*
+	* Action: Set siteGroup class variable
+	* Parameter: (string) => (siteGroup)
+	 */
+	SetSiteGroup(string)
 }

@@ -1,18 +1,16 @@
 package logics
 
 import (
-	config "auth-service/config"
 	logicinterface "auth-service/logics/interfaces"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type RegisterLogic struct {
-	username         string
-	password         string
-	siteGroup        string
-	RegisterData     logicinterface.IRegisterData
-	SiteGroupsConfig *config.SiteGroupsConfig
+	username     string
+	password     string
+	siteGroup    string
+	RegisterData logicinterface.IRegisterData
 }
 
 func (regLogic *RegisterLogic) SetUserName(username string) {

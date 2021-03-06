@@ -20,8 +20,8 @@ type AuthInformationData struct {
 	MongoData    datainterface.IMongoData `bson:"-"`
 }
 
-func (regLogic *AuthInformationData) SetSiteGroup(siteGroup string) {
-	regLogic.siteGroup = siteGroup
+func (authData *AuthInformationData) SetSiteGroup(siteGroup string) {
+	authData.siteGroup = siteGroup
 }
 
 func (authData *AuthInformationData) SetUserName(username string) {
