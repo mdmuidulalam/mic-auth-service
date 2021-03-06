@@ -20,4 +20,10 @@ type IAuthenticationLogic interface {
 	* Parameter: (string) => (password)
 	 */
 	SetPassword(string)
+
+	/*
+	* Action: Set siteGroup class variable
+	* Parameter: (string) => (siteGroup)
+	 */
+	SetSiteGroup(string)
 }

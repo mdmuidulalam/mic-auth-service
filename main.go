@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"auth-service/config"
 	"auth-service/docs"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -18,23 +19,38 @@ import (
 )
 
 func main() {
+
+	siteGroupsConfig := &config.SiteGroupsConfig{}
+
 	r := gin.Default()
+
 	r.Use(logger())
+	setupApiDoc(r)
+
 	routes.Auth{
 		R: r,
 		AuthenticationLogic: &logics.AuthenticationLogic{
 			AuthenticationData: &data.AuthInformationData{
-				MongoData: &data.MongoData{},
+				MongoData: &data.MongoData{
+					SiteGroupsConfig: siteGroupsConfig,
+				},
 			},
 		},
 		AuthorizationLogic: &logics.AuthorizationLogic{},
 		RegisterLogic: &logics.RegisterLogic{
 			RegisterData: &data.AuthInformationData{
-				MongoData: &data.MongoData{},
+				MongoData: &data.MongoData{
+					SiteGroupsConfig: siteGroupsConfig,
+				},
 			},
 		},
+		SiteGroupsConfig: siteGroupsConfig,
 	}.New()
 
+	r.Run(":8080")
+}
+
+func setupApiDoc(r *gin.Engine) {
 	docs.SwaggerInfo.Title = "Musk Daily API Documentation"
 	docs.SwaggerInfo.Description = "Simple API descriptions for musk daily API"
 	docs.SwaggerInfo.Version = "1.0"
@@ -43,7 +59,6 @@ func main() {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.Run(":8080")
 }
 
 func logger() gin.HandlerFunc {

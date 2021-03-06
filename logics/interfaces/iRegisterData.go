@@ -23,4 +23,10 @@ type IRegisterData interface {
 	 * Parameter: ([]byte) => (PasswordHash)
 	 */
 	SetPasswordHash([]byte)
+
+	/*
+	* Action: Set siteGroup class variable
+	* Parameter: (string) => (siteGroup)
+	 */
+	SetSiteGroup(string)
 }

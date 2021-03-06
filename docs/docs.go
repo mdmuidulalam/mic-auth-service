@@ -54,7 +54,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "The authentication is complete and access token provided in http only cookies",
+                        "description": "The authentication is complete and access token provided in http only cookies with key 'auth-token'",
                         "schema": {
                             "type": "boolean"
                         }
@@ -64,13 +64,19 @@ var doc = `{
                         "schema": {
                             "type": "boolean"
                         }
+                    },
+                    "211": {
+                        "description": "The siteGroup doesn't exists",
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 }
             }
         },
         "/authorize": {
             "get": {
-                "description": "It will authorize an user with jwt token from http only cookies",
+                "description": "It will authorize an user with jwt token from http only cookies with key name 'auth-token'",
                 "consumes": [
                     "application/json"
                 ],
@@ -129,6 +135,12 @@ var doc = `{
                     },
                     "210": {
                         "description": "The user is already registered",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "211": {
+                        "description": "The siteGroup doesn't exists",
                         "schema": {
                             "type": "boolean"
                         }
