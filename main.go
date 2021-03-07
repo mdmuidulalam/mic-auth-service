@@ -21,11 +21,17 @@ import (
 func main() {
 
 	siteGroupsConfig := &config.SiteGroupsConfig{}
+	config := &config.Config{}
+
+	configInstance := *config.GetConfig()
 
 	r := gin.Default()
 
-	r.Use(logger())
-	setupApiDoc(r)
+	if configInstance.Environment.Type != "local" {
+		r.Use(logger())
+	}
+
+	setupApiDoc(r, configInstance.Environment.Port)
 
 	routes.Auth{
 		R: r,
@@ -47,14 +53,14 @@ func main() {
 		SiteGroupsConfig: siteGroupsConfig,
 	}.New()
 
-	r.Run(":8080")
+	r.Run(":" + configInstance.Environment.Port)
 }
 
-func setupApiDoc(r *gin.Engine) {
+func setupApiDoc(r *gin.Engine, port string) {
 	docs.SwaggerInfo.Title = "Musk Daily API Documentation"
 	docs.SwaggerInfo.Description = "Simple API descriptions for musk daily API"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "localhost:8080"
+	docs.SwaggerInfo.Host = "localhost:" + port
 	docs.SwaggerInfo.BasePath = ""
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
