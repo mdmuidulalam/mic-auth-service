@@ -1,6 +1,7 @@
 package logics
 
 import (
+	"auth-service/config"
 	logicinterface "auth-service/logics/interfaces"
 	"time"
 
@@ -13,6 +14,7 @@ type AuthenticationLogic struct {
 	password           string
 	siteGroup          string
 	AuthenticationData logicinterface.IAuthenticationData
+	Config             *config.Config
 }
 
 func (authLogic *AuthenticationLogic) SetUserName(username string) {
@@ -42,12 +44,13 @@ func (authLogic *AuthenticationLogic) Authenticate() (int, string) {
 }
 
 func (authLogic *AuthenticationLogic) createToken() string {
+	configInstance := authLogic.Config.GetConfig()
 	claims := jwt.MapClaims{}
 	claims["username"] = authLogic.username
 	claims["siteGroup"] = authLogic.siteGroup
-	claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+	claims["exp"] = time.Now().Add(time.Minute * 60 * 24 * 30).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte("Secrate_Code"))
+	tokenString, err := token.SignedString([]byte(configInstance.AuthTokenSecreteCode))
 	if err != nil {
 		panic(err)
 	}

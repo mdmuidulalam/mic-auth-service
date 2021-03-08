@@ -41,14 +41,18 @@ func main() {
 					SiteGroupsConfig: siteGroupsConfig,
 				},
 			},
+			Config: config,
 		},
-		AuthorizationLogic: &logics.AuthorizationLogic{},
+		AuthorizationLogic: &logics.AuthorizationLogic{
+			Config: config,
+		},
 		RegisterLogic: &logics.RegisterLogic{
 			RegisterData: &data.AuthInformationData{
 				MongoData: &data.MongoData{
 					SiteGroupsConfig: siteGroupsConfig,
 				},
 			},
+			Config: config,
 		},
 		SiteGroupsConfig: siteGroupsConfig,
 	}.New()

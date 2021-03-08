@@ -3,5 +3,7 @@
     "environment" : {
         "type": "local",
         "port": "8080" 
-    }
+    },
+    "hashPasswordCost": 500,
+    "authTokenSecreteCode" : "winterIsComing"
 }

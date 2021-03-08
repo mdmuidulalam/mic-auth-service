@@ -11,6 +11,8 @@ type configClass struct {
 		Type string
 		Port string
 	}
+	HashPasswordCost     int
+	AuthTokenSecreteCode string
 }
 
 type Config struct {

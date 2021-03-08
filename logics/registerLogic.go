@@ -1,6 +1,7 @@
 package logics
 
 import (
+	"auth-service/config"
 	logicinterface "auth-service/logics/interfaces"
 
 	"golang.org/x/crypto/bcrypt"
@@ -11,6 +12,7 @@ type RegisterLogic struct {
 	password     string
 	siteGroup    string
 	RegisterData logicinterface.IRegisterData
+	Config       *config.Config
 }
 
 func (regLogic *RegisterLogic) SetUserName(username string) {
@@ -26,12 +28,13 @@ func (regLogic *RegisterLogic) SetSiteGroup(siteGroup string) {
 }
 
 func (regLogic *RegisterLogic) Register() int {
+	configInstance := regLogic.Config.GetConfig()
 	regLogic.RegisterData.SetUserName(regLogic.username)
 	regLogic.RegisterData.SetSiteGroup(regLogic.siteGroup)
 
 	authInfo := regLogic.RegisterData.FindOneAuthInformation()
 	if authInfo == nil {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(regLogic.password), bcrypt.DefaultCost)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(regLogic.password), configInstance.HashPasswordCost)
 		if err != nil {
 			panic(err)
 		}
