@@ -54,8 +54,7 @@ func (auth Auth) Authenticate(c *gin.Context) {
 		statusCode = 210
 	}
 
-	c.SetCookie("hello", "please", 60*60*24, "", "/localhost:8080", false, false)
-	c.SetCookie("auth-token", token, 60*60*24, "", "/localhost:8080", false, true)
+	c.SetCookie("auth-token", token, 60*60*24*30, "", "", false, true)
 	c.Writer.WriteHeader(statusCode)
 }
 
