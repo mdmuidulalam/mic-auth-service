@@ -31,7 +31,7 @@ func (auth Auth) New() {
 // @Success 200 {boolean} boolean "The authentication is complete and access token provided in http only cookies with key 'auth-token'"
 // @Success 210 {boolean} boolean "Wrong authentication information provided"
 // @Success 211 {boolean} boolean "The siteGroup doesn't exists"
-func (auth Auth) Authenticate(c *gin.Context) {
+func (auth *Auth) Authenticate(c *gin.Context) {
 	var authInfo authenticationInformation
 	if err := c.ShouldBind(&authInfo); err != nil {
 		panic(err)
@@ -68,7 +68,7 @@ func (auth Auth) Authenticate(c *gin.Context) {
 // @Success 200 {boolean} boolean "The registration is completed"
 // @Success 210 {boolean} boolean "The user is already registered"
 // @Success 211 {boolean} boolean "The siteGroup doesn't exists"
-func (auth Auth) Register(c *gin.Context) {
+func (auth *Auth) Register(c *gin.Context) {
 	var authInfo authenticationInformation
 	if err := c.ShouldBind(&authInfo); err != nil {
 		panic(err)
@@ -101,7 +101,7 @@ func (auth Auth) Register(c *gin.Context) {
 // @Accept json
 // @Success 200 {boolean} boolean "The user is authorized"
 // @Success 210 {boolean} boolean "Wrong jwt token"
-func (auth Auth) Authorize(c *gin.Context) {
+func (auth *Auth) Authorize(c *gin.Context) {
 	authToken, err := c.Cookie("auth-token")
 	if err != nil {
 		panic(err)
