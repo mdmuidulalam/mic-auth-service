@@ -13,8 +13,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	data "auth-service/data"
-	logics "auth-service/logics"
 	routes "auth-service/routes"
 )
 
@@ -33,36 +31,14 @@ func main() {
 
 	setupApiDoc(r, configInstance.Environment.Port)
 
-	routes.Auth{
-		R: r,
-		AuthenticationLogic: &logics.AuthenticationLogic{
-			AuthenticationData: &data.AuthInformationData{
-				MongoData: &data.MongoData{
-					SiteGroupsConfig: siteGroupsConfig,
-				},
-			},
-			Config: config,
-		},
-		AuthorizationLogic: &logics.AuthorizationLogic{
-			Config: config,
-		},
-		RegisterLogic: &logics.RegisterLogic{
-			RegisterData: &data.AuthInformationData{
-				MongoData: &data.MongoData{
-					SiteGroupsConfig: siteGroupsConfig,
-				},
-			},
-			Config: config,
-		},
-		SiteGroupsConfig: siteGroupsConfig,
-	}.New()
+	routes.AuthRoutes(r, siteGroupsConfig, config)
 
 	r.Run(":" + configInstance.Environment.Port)
 }
 
 func setupApiDoc(r *gin.Engine, port string) {
-	docs.SwaggerInfo.Title = "Musk Daily API Documentation"
-	docs.SwaggerInfo.Description = "Simple API descriptions for musk daily API"
+	docs.SwaggerInfo.Title = "Auth Service API Documentation"
+	docs.SwaggerInfo.Description = "Simple API descriptions for Auth Service"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "localhost:" + port
 	docs.SwaggerInfo.BasePath = ""

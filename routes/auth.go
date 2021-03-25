@@ -2,23 +2,23 @@ package routes
 
 import (
 	"auth-service/config"
+	"auth-service/data"
+	"auth-service/logics"
+
 	routesinterface "auth-service/routes/interfaces"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Auth struct {
-	R                   *gin.Engine
-	AuthenticationLogic routesinterface.IAuthenticationLogic
-	RegisterLogic       routesinterface.IRegisterLogic
-	AuthorizationLogic  routesinterface.IAuthorizationLogic
-	SiteGroupsConfig    *config.SiteGroupsConfig
-}
+var singletonSiteGroupsConfig *config.SiteGroupsConfig
+var singletonConfig *config.Config
 
-func (auth Auth) New() {
-	auth.R.POST("authenticate", auth.Authenticate)
-	auth.R.POST("register", auth.Register)
-	auth.R.GET("authorize", auth.Authorize)
+func AuthRoutes(router *gin.Engine, siteGroupsConfig *config.SiteGroupsConfig, config *config.Config) {
+	singletonSiteGroupsConfig = siteGroupsConfig
+	singletonConfig = config
+	router.POST("/authenticate", authenticate)
+	router.POST("/register", register)
+	router.GET("/authorize", authorize)
 }
 
 // @Summary Authenticate an user
@@ -31,21 +31,31 @@ func (auth Auth) New() {
 // @Success 200 {boolean} boolean "The authentication is complete and access token provided in http only cookies with key 'auth-token'"
 // @Success 210 {boolean} boolean "Wrong authentication information provided"
 // @Success 211 {boolean} boolean "The siteGroup doesn't exists"
-func (auth *Auth) Authenticate(c *gin.Context) {
+func authenticate(c *gin.Context) {
 	var authInfo authenticationInformation
 	if err := c.ShouldBind(&authInfo); err != nil {
 		panic(err)
 	}
-	if _, exist := (*auth.SiteGroupsConfig.GetSiteGroupConfig())[authInfo.SiteGroup]; !exist {
+	if _, exist := (*singletonSiteGroupsConfig.GetSiteGroupConfig())[authInfo.SiteGroup]; !exist {
 		c.Writer.WriteHeader(211)
 		return
 	}
 
-	auth.AuthenticationLogic.SetUserName(authInfo.Username)
-	auth.AuthenticationLogic.SetPassword(authInfo.Password)
-	auth.AuthenticationLogic.SetSiteGroup(authInfo.SiteGroup)
+	var authenticationLogic routesinterface.IAuthenticationLogic
+	authenticationLogic = &logics.AuthenticationLogic{
+		AuthenticationData: &data.AuthInformationData{
+			MongoData: &data.MongoData{
+				SiteGroupsConfig: singletonSiteGroupsConfig,
+			},
+		},
+		Config: singletonConfig,
+	}
 
-	authStatus, token := auth.AuthenticationLogic.Authenticate()
+	authenticationLogic.SetUserName(authInfo.Username)
+	authenticationLogic.SetPassword(authInfo.Password)
+	authenticationLogic.SetSiteGroup(authInfo.SiteGroup)
+
+	authStatus, token := authenticationLogic.Authenticate()
 
 	statusCode := 0
 	if authStatus == 1 {
@@ -68,21 +78,31 @@ func (auth *Auth) Authenticate(c *gin.Context) {
 // @Success 200 {boolean} boolean "The registration is completed"
 // @Success 210 {boolean} boolean "The user is already registered"
 // @Success 211 {boolean} boolean "The siteGroup doesn't exists"
-func (auth *Auth) Register(c *gin.Context) {
+func register(c *gin.Context) {
 	var authInfo authenticationInformation
 	if err := c.ShouldBind(&authInfo); err != nil {
 		panic(err)
 	}
-	if _, exist := (*auth.SiteGroupsConfig.GetSiteGroupConfig())[authInfo.SiteGroup]; !exist {
+	if _, exist := (*singletonSiteGroupsConfig.GetSiteGroupConfig())[authInfo.SiteGroup]; !exist {
 		c.Writer.WriteHeader(211)
 		return
 	}
 
-	auth.RegisterLogic.SetUserName(authInfo.Username)
-	auth.RegisterLogic.SetPassword(authInfo.Password)
-	auth.RegisterLogic.SetSiteGroup(authInfo.SiteGroup)
+	var registerLogic routesinterface.IRegisterLogic
+	registerLogic = &logics.RegisterLogic{
+		RegisterData: &data.AuthInformationData{
+			MongoData: &data.MongoData{
+				SiteGroupsConfig: singletonSiteGroupsConfig,
+			},
+		},
+		Config: singletonConfig,
+	}
 
-	registerStatus := auth.RegisterLogic.Register()
+	registerLogic.SetUserName(authInfo.Username)
+	registerLogic.SetPassword(authInfo.Password)
+	registerLogic.SetSiteGroup(authInfo.SiteGroup)
+
+	registerStatus := registerLogic.Register()
 
 	statusCode := 0
 	if registerStatus == 1 {
@@ -101,15 +121,20 @@ func (auth *Auth) Register(c *gin.Context) {
 // @Accept json
 // @Success 200 {boolean} boolean "The user is authorized"
 // @Success 210 {boolean} boolean "Wrong jwt token"
-func (auth *Auth) Authorize(c *gin.Context) {
+func authorize(c *gin.Context) {
 	authToken, err := c.Cookie("auth-token")
 	if err != nil {
 		panic(err)
 	}
 
-	auth.AuthorizationLogic.SetAuthToken(authToken)
+	var authorizationLogic routesinterface.IAuthorizationLogic
+	authorizationLogic = &logics.AuthorizationLogic{
+		Config: singletonConfig,
+	}
 
-	authorizationStatus := auth.AuthorizationLogic.Authorize()
+	authorizationLogic.SetAuthToken(authToken)
+	authorizationStatus := authorizationLogic.Authorize()
+
 	if authorizationStatus == 1 {
 		c.Writer.WriteHeader(200)
 	} else {
